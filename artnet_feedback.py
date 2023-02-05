@@ -4,7 +4,6 @@ import array
 import sys
 import dns.resolver
 import requests
-import json
 import math
 import time
 from ola.ClientWrapper import ClientWrapper
@@ -53,27 +52,27 @@ def updateArtnet():
 
             if response is not None:
                 statusmask = set_bit(statusmask, 1)
-                data = json.dumps(response.json())
-            if data.live == True:
+                data = response.json()
+            if data["live"] == True:
                 statusmask = set_bit(statusmask, 2)
-            if data.lip == artnet_source:
+            if data["lip"] == artnet_source:
                 statusmask = set_bit(statusmask, 3)
-            statusmask = statusmask | (data.leds.count << 4)
+            statusmask = statusmask | (data["leds"]["count"] << 4)
             dmxarray.append(statusmask)  # chan 1
 
             universe_amount = math.ceil(
-                data.leds.count / MaxLedsInUniverse)
+                data["leds"]["count"] / MaxLedsInUniverse)
             if universe_amount > 3:
                 universe_amount = 0
             temperature = 0  # placeholder
             chan2 = (universe_amount << 6) | temperature
             dmxarray.append(chan2)  # chan 2
 
-            feedback = data.u.ArtNetFeedback
-            dmxarray.append(feedback.NetInfo.Network)  # chan 3
-            dmxarray.append(feedback.NetInfo.Subnet)  # chan 4
-            dmxarray.append(feedback.NetInfo.Universe)  # chan 5
-            dmxarray.append(feedback.Battery.percentageLeft)  # chan 6
+            feedback = data["u"]["ArtNetFeedback"]
+            dmxarray.append(feedback["NetInfo"]["Network"])  # chan 3
+            dmxarray.append(feedback["NetInfo"]["Subnet"])  # chan 4
+            dmxarray.append(feedback["NetInfo"]["Universe"])  # chan 5
+            dmxarray.append(feedback["Battery"]["percentageLeft"])  # chan 6
         else:
             dmxarray.append(statusmask)  # chan 1
             # Padding rest of the node data with zeros
