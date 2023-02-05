@@ -53,7 +53,7 @@ def updateArtnet():
 
             if response is not None:
                 statusmask = set_bit(statusmask, 1)
-                data = json.load(response.json())
+                data = json.dumps(response.json())
             if data.live == True:
                 statusmask = set_bit(statusmask, 2)
             if data.lip == artnet_source:
