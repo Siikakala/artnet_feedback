@@ -15,7 +15,7 @@ mDNS.nameservers = ['224.0.0.251']  # mdns multicast address
 mDNS.port = 5353  # mdns port
 
 MaxLedsInUniverse = 128
-Universe = 258  # Art-Net 1:0:2
+Universe = 2  # Art-Net 1:0:2 NOTE: olad internal id
 artnet_source = "10.0.0.7"
 # Nodes = ["wled-unit1", "wled-unit2", "wled-unit3", "wled-unit4", "wled-unit5", "wled-unit6", "wled-unit7", "wled-unit8", "wled-unit9", "wled-unit10"]
 Nodes = ["wled-test", "wled-Verho"]
@@ -40,14 +40,14 @@ def updateArtnet():
         statusmask = 0
         try:
             # who, what, class, tcp?, source ip, raise if no answer?, source port, lifetime
-            a = mDNS.resolve(node, 'A', 'IN', False, None, False, 0, 1)
+            a = mDNS.resolve(node+".local", 'A', 'IN', False, None, False, 0, 1)
         except:
             a = None
 
         if a is not None:
             statusmask = set_bit(statusmask, 0)
             try:
-                response = requests.get("http://"+node+"/json/info")
+                response = requests.get("http://"+node+".local/json/info")
             except:
                 response = None
 
@@ -100,7 +100,7 @@ def updateArtnet():
 
     global wrapper
     wrapper = ClientWrapper()
-    client = wrapper.client()
+    client = wrapper.Client()
     client.SendDmx(Universe, dmxarray, DmxSent)
     wrapper.Run()
 
