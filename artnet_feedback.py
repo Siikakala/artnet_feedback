@@ -57,7 +57,20 @@ def updateArtnet():
                 statusmask = set_bit(statusmask, 2)
             if data["lip"] == artnet_source:
                 statusmask = set_bit(statusmask, 3)
-            statusmask = statusmask | (data["leds"]["count"] << 4)
+            ledlayout = 0
+            if data["leds"]["count"] < 11:
+                ledlayout = data["leds"]["count"]
+            elif data["leds"]["count"] == 30:
+                ledlayout = 11
+            elif data["leds"]["count"] == 60:
+                ledlayout = 12
+            elif data["leds"]["count"] == 90:
+                ledlayout = 13
+            elif data["leds"]["count"] == 120:
+                ledlayout = 14
+            else:
+                ledlayout = 15
+            statusmask = statusmask | (ledlayout << 4)
             dmxarray.append(statusmask)  # chan 1
 
             universe_amount = math.ceil(
