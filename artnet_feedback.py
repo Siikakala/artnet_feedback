@@ -80,7 +80,7 @@ def updateArtnet():
         # * Channel 2: Is the JSON API answering?
         # * Channel 3: Is the node receiving Art-Net?
         # * Channel 4: ..from correct source?
-        # * Channel 5: amount of leds (255 if more than 250)
+        # * Channel 5: amount of leds (255 if unknown or more than 250)
         # * Channel 6: amount of universes
         # * Channels 7-9 - Art-Net network info. Universe is starting universe.
         # * Channel 10 - battery status
