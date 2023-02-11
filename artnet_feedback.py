@@ -7,6 +7,14 @@ mDNS = dns.resolver.Resolver()
 mDNS.nameservers = ['224.0.0.251']  # mdns multicast address
 mDNS.port = 5353  # mdns port
 
+if "debug" in sys.argv:
+    debug = True
+else:
+    debug = False
+
+if debug:
+    print("Debug present")
+
 MaxLedsInUniverse = 128
 Universe = 2  # Art-Net 1:0:2 NOTE: olad internal id
 artnet_source = "10.0.0.7"
@@ -94,6 +102,7 @@ def updateArtnet():
 
 def main():
     while True:
+
         updateArtnet()
         time.sleep(15)
 
