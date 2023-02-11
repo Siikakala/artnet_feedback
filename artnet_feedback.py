@@ -1,4 +1,4 @@
-    from __future__ import print_function
+from __future__ import print_function
 import array, sys, dns.resolver, requests, math, time
 from ola.ClientWrapper import ClientWrapper
 
