@@ -80,9 +80,9 @@ def updateArtnet():
                     print("    Node source is NOT correct: "+artnet_source)
 
             if data["leds"]["count"] > 250:
-                dmxarray.append(data["leds"]["count"]) # chan 5
-            else:
                 dmxarray.append(255) # chan 5
+            else:
+                dmxarray.append(data["leds"]["count"]) # chan 5
             if debug:
                 print("    LED count: "+str(data["leds"]["count"]))
 
