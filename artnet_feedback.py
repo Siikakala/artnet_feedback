@@ -33,6 +33,8 @@ def DmxSent(status):
 def updateArtnet():
     dmxarray = array.array('B')
     for node in Nodes:
+        if debug:
+            print("- Node "+node)
         try:
             # who, what, class, tcp?, source ip, raise if no answer?, source port, lifetime s
             a = mDNS.resolve(node+".local", 'A', 'IN', False, None, False, 0, 1)
@@ -40,6 +42,8 @@ def updateArtnet():
             a = None
 
         if a is not None:
+            if debug:
+                print("  Node mDNS resolved, querying json api")
             dmxarray.append(255) # chan 1
             try:
                 response = requests.get("http://"+node+".local/json/info")
@@ -49,35 +53,56 @@ def updateArtnet():
             if response is not None:
                 dmxarray.append(255) # chan 2
                 data = response.json()
+                if debug:
+                    print("  API accessible")
             else:
                 dmxarray.append(0) # chan 2
                 data = None
+                if debug:
+                    print("  API not answering")
 
             if data["live"] == True:
                 dmxarray.append(255) # chan 3
+                if debug:
+                    print("  Node is receiving live data")
             else:
                 dmxarray.append(0) # chan 3
+                if debug:
+                    print("  Node is NOT receiving live data")
 
             if data["lip"] == artnet_source:
                 dmxarray.append(255) # chan 4
+                if debug:
+                    print("  Node is receiving data from correct source "+artnet_source)
             else:
                 dmxarray.append(0) # chan 4
+                if debug:
+                    print("  Node source is NOT correct: "+artnet_source)
 
             if data["leds"]["count"] > 250:
                 dmxarray.append(data["leds"]["count"]) # chan 5
             else:
                 dmxarray.append(255) # chan 5
+            if debug:
+                print("  LED count: "+data["leds"]["count"])
 
             universe_amount = math.ceil(
                 data["leds"]["count"] / MaxLedsInUniverse)
             dmxarray.append(universe_amount) # chan 6
+            if debug:
+                print("  Universe count: "+universe_amount)
 
             feedback = data["u"]["ArtNetFeedback"]
             dmxarray.append(feedback["NetInfo"]["Network"])  # chan 7
             dmxarray.append(feedback["NetInfo"]["Subnet"])  # chan 8
             dmxarray.append(feedback["NetInfo"]["Universe"])  # chan 9
             dmxarray.append(feedback["Battery"]["percentageLeft"])  # chan 10
+            if debug:
+                print("  First Art-Net universe: "+feedback["NetInfo"]["Network"]+":"+feedback["NetInfo"]["Subnet"]+":"+feedback["NetInfo"]["Universe"])
+                print("  Battery level "+feedback["Battery"]["percentageLeft"]+"% - voltage "+feedback["Battery"]["currentVoltage"]+"V / "+feedback["Battery"]["maxVoltage"]+"V")
         else:
+            if debug:
+                print("  Node NOT reachable - mDNS didn't resovle. Padding DMX array")
             dmxarray.append(10) # chan 1
             # Padding rest of the node data with zeros
             for i in range(1, 10):
@@ -93,6 +118,8 @@ def updateArtnet():
         # * Channels 7-9 - Art-Net network info. Universe is starting universe.
         # * Channel 10 - battery status
 
+    if debug:
+        print("Sending DMX data")
     global wrapper
     wrapper = ClientWrapper()
     client = wrapper.Client()
@@ -102,8 +129,11 @@ def updateArtnet():
 
 def main():
     while True:
-
+        if debug:
+            print("Discovering nodes - nodelist: "+str(Nodes))
         updateArtnet()
+        if debug:
+            print("Iteration done, 15s sleep")
         time.sleep(15)
 
 
