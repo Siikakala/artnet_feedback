@@ -18,8 +18,8 @@ if debug:
 MaxLedsInUniverse = 128
 Universe = 2  # Art-Net 1:0:2 NOTE: olad internal id
 artnet_source = "10.0.0.7"
-# Nodes = ["wled-unit1", "wled-unit2", "wled-unit3", "wled-unit4", "wled-unit5", "wled-unit6", "wled-unit7", "wled-unit8", "wled-unit9", "wled-unit10"]
-Nodes = ["wled-test", "wled-Verho"]
+Nodes = ["wled-unit1", "wled-unit2", "wled-unit3", "wled-unit4", "wled-unit5", "wled-unit6", "wled-unit7", "wled-unit8", "wled-unit9", "wled-unit10"]
+#Nodes = ["wled-test", "wled-Verho"]
 
 def DmxSent(status):
     if not status.Succeeded():
