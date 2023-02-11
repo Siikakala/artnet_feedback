@@ -1,4 +1,4 @@
-from __future__ import print_function
+    from __future__ import print_function
 import array, sys, dns.resolver, requests, math, time
 from ola.ClientWrapper import ClientWrapper
 
@@ -96,7 +96,10 @@ def updateArtnet():
             dmxarray.append(feedback["NetInfo"]["Network"])  # chan 7
             dmxarray.append(feedback["NetInfo"]["Subnet"])  # chan 8
             dmxarray.append(feedback["NetInfo"]["Universe"])  # chan 9
-            dmxarray.append(feedback["Battery"]["percentageLeft"])  # chan 10
+            if feedback["Battery"]["currentVoltage"] > 0:
+                dmxarray.append(feedback["Battery"]["percentageLeft"])  # chan 10
+            else:
+                dmxarray.append(250) # chan 10
             if debug:
                 print("    First Art-Net universe: "+str(feedback["NetInfo"]["Network"])+":"+str(feedback["NetInfo"]["Subnet"])+":"+str(feedback["NetInfo"]["Universe"]))
                 print("    Battery level "+str(feedback["Battery"]["percentageLeft"])+"% - voltage "+str(feedback["Battery"]["currentVoltage"])+"V / "+str(feedback["Battery"]["maxVoltage"])+"V")
@@ -116,7 +119,7 @@ def updateArtnet():
         # * Channel 5: amount of leds (255 if unknown or more than 250)
         # * Channel 6: amount of universes
         # * Channels 7-9 - Art-Net network info. Universe is starting universe.
-        # * Channel 10 - battery status
+        # * Channel 10 - battery status, 250 if battery not present (voltage -1)
 
     if debug:
         print("Sending DMX data")
