@@ -84,13 +84,13 @@ def updateArtnet():
             else:
                 dmxarray.append(255) # chan 5
             if debug:
-                print("  LED count: "+data["leds"]["count"])
+                print("  LED count: "+str(data["leds"]["count"]))
 
             universe_amount = math.ceil(
                 data["leds"]["count"] / MaxLedsInUniverse)
             dmxarray.append(universe_amount) # chan 6
             if debug:
-                print("  Universe count: "+universe_amount)
+                print("  Universe count: "+str(universe_amount))
 
             feedback = data["u"]["ArtNetFeedback"]
             dmxarray.append(feedback["NetInfo"]["Network"])  # chan 7
@@ -98,8 +98,8 @@ def updateArtnet():
             dmxarray.append(feedback["NetInfo"]["Universe"])  # chan 9
             dmxarray.append(feedback["Battery"]["percentageLeft"])  # chan 10
             if debug:
-                print("  First Art-Net universe: "+feedback["NetInfo"]["Network"]+":"+feedback["NetInfo"]["Subnet"]+":"+feedback["NetInfo"]["Universe"])
-                print("  Battery level "+feedback["Battery"]["percentageLeft"]+"% - voltage "+feedback["Battery"]["currentVoltage"]+"V / "+feedback["Battery"]["maxVoltage"]+"V")
+                print("  First Art-Net universe: "+str(feedback["NetInfo"]["Network"])+":"+str(feedback["NetInfo"]["Subnet"])+":"+str(feedback["NetInfo"]["Universe"]))
+                print("  Battery level "+str(feedback["Battery"]["percentageLeft"])+"% - voltage "+str(feedback["Battery"]["currentVoltage"])+"V / "+str(feedback["Battery"]["maxVoltage"])+"V")
         else:
             if debug:
                 print("  Node NOT reachable - mDNS didn't resovle. Padding DMX array")
